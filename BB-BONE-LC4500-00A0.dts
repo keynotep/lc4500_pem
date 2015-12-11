@@ -1,0 +1,270 @@
+/dts-v1/;
+/plugin/;
+
+/*************************************************************************
+* 
+* Device Tree Overlay file for LC4500
+*
+* Keynote Photonics
+*
+* Please make sure your LC4500 is configured properly to avoid damage
+*
+************************************************************************/
+
+/* I2C2 */
+
+/ {
+    compatible = "ti,beaglebone", "ti,beaglebone-black";
+
+    /* identification */
+    part-number = "BB-BONE-LC4500";
+    version ="00A0";
+
+    exclusive-use =
+	"P9.20",
+	"P9.19",
+	"i2c2";
+
+    fragment@0 {
+        target = <&am33xx_pinmux>;
+        __overlay__ {
+
+
+	   i2c2_pins: pinmux_i2c2_pins {
+		      pintctrl-single,pins = <
+			     0x178 0x73		// spi0_d1.i2c2_sda,  SLEWCTRL_SLOW | IMPUT_PULLUP | MODE3
+			     0x17C 0x73 	// spi0_cs0.i2c2_scl,  SLEWCTRL_SLOW | IMPUT_PULLUP | MODE3
+		>;
+	   };
+
+            pinctrl_uart5: pinctrl_uart5_pins {
+                pinctrl-single,pins = <					 				   
+                        0x070 0x26  /* P9_11 = GPIO0_30 = GPMC_WAIT0 , MODE6 */
+                        0x074 0x06  /* P9_13 = GPIO0_31 = GPMC_WPN, MODE6 */
+                >;
+            };
+
+	    pinctrl_gpio: gpio_pins {
+		pinctrl-single,pins = <
+			0x194 0x57   /* spi1_d0 = GPIO3_15, SLEW_CTRL_SLOW, OUTPUT, MODE 7 */
+		>;
+           };
+
+           spi0_pins_s0: pinmux_spi0_pins_s0 {
+                        pinctrl-single,pins = <
+                                0x150 0x33      /* spi0_sclk, INPUT_PULLUP | MODE3 */
+                                0x154 0x33      /* spi0_d0, INPUT_PULLUP | MODE3 */
+                                0x158 0x13      /* spi0_d1, OUTPUT_PULLUP | MODE3 */
+                                0x15c 0x13      /* spi0_cs0, OUTPUT_PULLUP | MODE3 */
+                                /* NOTE: on BBB, SPI0-CS1 pin is used by mmcp_cd */
+                >;
+            };
+
+	bone_lcd7_cape_lcd_pins: pinmux_bone_lcd7_cape_lcd_pins {
+				pinctrl-single,pins = <
+					0x1b0 0x03      /* xdma_event_intr0, OMAP_MUX_MODE3 | AM33XX_PIN_OUTPUT */
+
+					0xa0 0x08	/* lcd_data0.lcd_data0, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0xa4 0x08	/* lcd_data1.lcd_data1, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0xa8 0x08	/* lcd_data2.lcd_data2, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0xac 0x08	/* lcd_data3.lcd_data3, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0xb0 0x08	/* lcd_data4.lcd_data4, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0xb4 0x08	/* lcd_data5.lcd_data5, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0xb8 0x08	/* lcd_data6.lcd_data6, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0xbc 0x08	/* lcd_data7.lcd_data7, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0xc0 0x08	/* lcd_data8.lcd_data8, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0xc4 0x08	/* lcd_data9.lcd_data9, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0xc8 0x08	/* lcd_data10.lcd_data10, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0xcc 0x08	/* lcd_data11.lcd_data11, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0xd0 0x08	/* lcd_data12.lcd_data12, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0xd4 0x08	/* lcd_data13.lcd_data13, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0xd8 0x08	/* lcd_data14.lcd_data14, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0xdc 0x08	/* lcd_data15.lcd_data15, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0x3c 0x09 /* lcd_data16.lcd_data16, OMAP_MUX_MODE1 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0x38 0x09 /* lcd_data17.lcd_data17, OMAP_MUX_MODE1 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0x34 0x09 /* lcd_data18.lcd_data18, OMAP_MUX_MODE1 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0x30 0x09 /* lcd_data19.lcd_data19, OMAP_MUX_MODE1 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0x2c 0x09 /* lcd_data20.lcd_data20, OMAP_MUX_MODE1 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0x28 0x09 /* lcd_data21.lcd_data21, OMAP_MUX_MODE1 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0x24 0x09 /* lcd_data22.lcd_data22, OMAP_MUX_MODE1 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0x20 0x09 /* lcd_data23.lcd_data23, OMAP_MUX_MODE1 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+					0xe0 0x00	/* lcd_vsync.lcd_vsync, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT */
+					0xe4 0x00	/* lcd_hsync.lcd_hsync, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT */
+					0xe8 0x00	/* lcd_pclk.lcd_pclk, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT */
+                                        0xec 0x00       /* lcd_ac_bias_en.lcd_ac_bias_en, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT */
+				>;
+		};
+
+
+	};
+    };
+
+
+    fragment@1 {
+	target = <&i2c2>;
+	__overlay__ {
+	   #address-cells = <1>;
+	   #size-cells = <0>;
+	   status = "okay";
+	   pinctrl-names = "default";
+	   pinctrl-0 = <&i2c2_pins>;
+
+  	   clock-frequency = <100000>;
+
+	
+	};
+
+   };
+
+
+      fragment@2 {
+		target = <&uart5>;
+		__overlay__ {
+			status			= "okay";
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_uart5>;
+		};
+	};
+
+     fragment@3 {
+	target = <&ocp>;
+	__overlay__ {
+		gpio_helper: helper {
+			compatible = "bone-pinmux-helper";
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_gpio>;
+			status = "okay";
+		};
+	   };
+	};
+
+    fragment@4 {
+        target = <&spi0>;
+        __overlay__ {
+
+             #address-cells = <1>;
+             #size-cells = <0>;
+             status = "okay";
+             pinctrl-names = "default";
+             pinctrl-0 = <&spi0_pins_s0>;
+
+             spidev@0 {
+                 spi-max-frequency = <24000000>;
+                 reg = <0>;
+                 compatible = "linux,spidev";
+            };
+        };
+    };
+
+	fragment@5 {
+		target = <&ocp>;
+		__overlay__ {
+
+			/* avoid stupid warning */
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			/* Settings for ThreeFive S9700RTWV35TR / LCD7 cape: */
+			/* This is required for DRM driver */
+			hdmi {
+				compatible = "tilcdc,panel";
+				pinctrl-names = "default";
+				pinctrl-0 = <&bone_lcd7_cape_lcd_pins>;
+				 panel-info {
+					ac-bias           = <255>;
+					ac-bias-intrpt    = <0>;
+					dma-burst-sz      = <16>;
+					bpp               = <32>;  
+
+					fdd               = <16>;
+					sync-edge         = <1>;
+					sync-ctrl         = <1>;
+					raster-order      = <0>;
+					fifo-th           = <0>;
+					invert-pxl-clk;
+				};
+ 
+				display-timings {
+					native-mode = <&timing1>;
+
+
+                                        timing0: 912x1140@100 {
+                                                hactive         = <912>;
+                                                vactive         = <1140>;
+                                                hback-porch     = <16>;
+                                                hfront-porch    = <16>;
+                                                hsync-len       = <128>;
+                                                vback-porch     = <3>;
+                                                vfront-porch    = <0>;
+                                                vsync-len       = <17>;
+                                                clock-frequency = <125000000>;
+                                                hsync-active    = <1>;
+                                                vsync-active    = <0>;
+                                                bpp             = <32>;
+                                        };
+
+					timing1: 912x1140@60 {
+						hactive         = <912>;
+						vactive         = <1140>;
+						hback-porch     = <115>;
+						hfront-porch    = <53>;
+						hsync-len       = <76>;
+						vback-porch     = <38>;
+						vfront-porch    = <1>;
+						vsync-len       = <3>;
+						clock-frequency = <82000000>;
+						hsync-active    = <1>;
+						vsync-active    = <0>;
+						bpp		= <32>;
+					};
+
+                                        timing2: 1280x800@60 {
+                                                hactive         = <1280>;
+                                                vactive         = <800>;
+                                                hback-porch     = <240>;
+                                                hfront-porch    = <64>;
+                                                hsync-len       = <136>;
+                                                vback-porch     = <24>;
+                                                vfront-porch    = <1>;
+                                                vsync-len       = <3>;
+                                                clock-frequency = <83500000>;
+                                                hsync-active    = <0>;
+                                                vsync-active    = <0>;
+                                        };
+
+
+                                        timing3: 912x1140@101 {
+                                                hactive         = <912>;
+                                                vactive         = <1140>;
+                                                hback-porch     = <16>;
+                                                hfront-porch    = <16>;
+                                                hsync-len       = <128>;
+                                                vback-porch     = <3>;
+                                                vfront-porch    = <1>;
+                                                vsync-len       = <3>;
+                                                clock-frequency = <125000000>;
+                                                hsync-active    = <1>;
+                                                vsync-active    = <0>;
+                                                bpp             = <32>;
+                                        };
+					};
+				};
+
+			fb  {
+				compatible = "ti,am33xx-tilcdc";
+				reg = <0x4830e000 0x1000>; 
+				interrupt-parent = <&intc>;
+				interrupts = <36>;
+				ti,hwmods = "lcdc";
+			/*	ti,power-gpio = <&gpio1 2 0x0>; */
+				ti,allow-non-reduced-blanking-modes;
+				ti,allow-non-audio-modes; 
+				bgrx_24bpp;
+			};
+
+
+		};
+	};
+
+				
+};
