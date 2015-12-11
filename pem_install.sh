@@ -1,5 +1,5 @@
 #!/bin/bash
-# Last update:  11/30/2015 
+# Last update:  12/11/2015 
 #
 #    This script is designed to be ran on the BB from the directory where the install files are located.
 # This means that the user has already pulled a copy of the install files (including this script)
@@ -8,12 +8,12 @@
 #
 #    This script requires superuser priveleges (default) for some operations.
 #
-#    It should be ran on a clean Debian build (Debian Image 2015-03-01 was used originally). 
+#    It should be ran on a clean Debian build (Debian Image 2015-07-28 was used originally). 
 #
 #    When run, it will perform several "install" operations for the following components:
-# - Links will be created for the startup script using update-rc.d command in /etc/init.d/lc4500_startup.sh
+# - Links will be created for the startup script using update-rc.d command in /etc/init.d/
 # - compile the cape manager overlays (DTS) into DTBO files and place them into the cape manager folder
-# - update apt-get and install various libraries required by the application
+# - update aptitude database and install various libraries required by the application
 #
 #
 cur_dir=`pwd`
@@ -56,11 +56,10 @@ else
 fi
 
 echo ============= Check Network config ================
-#echo Check /etc/network/interfaces to be sure the IP address is correct for this board
 echo Check /etc/hostname to be sure the network name is correct:
-echo "Type the new network hostname you want to use [you have 30 seconds or default will be automatically used]:"
-
 newhostname="lc4500-pem"
+echo "  Type the new network hostname you want to use or just enter to use default."
+echo "  (you have 30 seconds or default will be automatically used): [lc4500-pem] "
 read -t 30 newhostname
 if [ $newhostname == ""] ; then
    echo "Default network ID used: lc4500-pem. Be careful if you have multiple units on your network!"
@@ -81,16 +80,13 @@ cd $cur_dir
 #Need to add xf86drm.h and other headers to system path to build locally
 cp headers/*.h /usr/include
 
-# Build application
-cd objs 
-make
-if [ -s /etc/init.d/lc45000-pem.sh ] ; then
-   echo "Stopping exisitng PEM application..."
-   sudo service lc4500-pem.sh stop
-   echo "done. Copying new build"
-fi
+# Build and install application
+cd $cur_dir
+make clean
+make all
+make install
 
-sudo cp lc4500_main /usr/bin
+#create solutions database directory
 if [ -d /opt/lc4500pem ] ; then
     echo "Solution directory exits"
 else

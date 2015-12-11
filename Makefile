@@ -13,10 +13,8 @@ lc4500_main: $(HIDOBJS)
 	@cd objs; make; cp lc4500_main .. 
 
 install: lc4500_main
-	service lc4500-pem.sh stop
-	sleep 5
-	cp lc4500_main /usr/bin/.
+	service lc4500-pem.sh stop; sleep 10; cp lc4500_main /usr/bin/. 
 
 clean:
-	rm lc4500_main
+	rm lc4500_main; rm objs/lc4500_main
 
