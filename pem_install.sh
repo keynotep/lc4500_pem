@@ -18,6 +18,9 @@
 #
 cur_dir=`pwd`
 
+echo "Stopping current application"
+sudo kill -15 `cat /var/run/lc4500.pid`
+
 echo ========= Installing Startup Script and app ==========
 # Now fix startup sequence
 echo "Updating Boot-up scripts...."
@@ -61,7 +64,7 @@ newhostname="lc4500-pem"
 echo "  Type the new network hostname you want to use or just enter to use default."
 echo "  (you have 30 seconds or default will be automatically used): [lc4500-pem] "
 read -t 30 newhostname
-if [ $newhostname == ""] ; then
+if [ $newhostname == "" ] ; then
    echo "Default network ID used: lc4500-pem. Be careful if you have multiple units on your network!"
    sudo echo "lc4500-pem" > /etc/hostname
 else
@@ -75,27 +78,26 @@ sudo apt-get install libdrm2
 sudo apt-get install libudev-dev
 sudo apt-get install libdrm-dev
 
-echo "Building PEM application..."
+echo "Building and installing new PEM application..."
 cd $cur_dir
-#Need to add xf86drm.h and other headers to system path to build locally
-cp headers/*.h /usr/include
-
-# Build and install application
 cd $cur_dir
 make clean
 make all
-make install
+sudo cp lc4500_main /usr/bin/.
 
 #create solutions database directory
 if [ -d /opt/lc4500pem ] ; then
-    echo "Solution directory exits"
+    echo "Solution directory exists"
 else
+    echo "Creating Solution directory"
     sudo mkdir /opt/lc4500pem
 fi
 
 if [ -s /usr/bin/lc4500_main ] ; then
    echo "Installation Successfull. Rebooting ..."
+   sleep 5
    reboot
 else
    echo "Installation script failed!"
 fi
+
