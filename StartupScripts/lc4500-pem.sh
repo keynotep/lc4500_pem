@@ -1,5 +1,5 @@
 #!/bin/sh 
-# Last Changed:  10-11-2015
+# Last Changed:  12-11-2015
 #
 # Startup script for LC4500 BBB software
 
