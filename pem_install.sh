@@ -1,14 +1,18 @@
 #!/bin/bash
-# Last update:  12/11/2015 
+# Last update:  01/21/2016 
 #
 #    This script is designed to be ran on the BB from the directory where the install files are located.
 # This means that the user has already pulled a copy of the install files (including this script)
 # onto the BB either through git or some other means.  
 #
 #
-#    This script requires superuser priveleges (default) for some operations.
+#    Start with a clean Debian build. Debian Image 2015-07-28 was used from the following image:
+#       BBB-eMMC-flasher-debian-7.8-ixde-4gb-armhf-2015-07-28-4gb.img
 #
-#    It should be ran on a clean Debian build (Debian Image 2015-07-28 was used originally). 
+#    Load this install script and related files from git using the following command line (public):
+#	git clone https://github.com/keynotep/lc4500_pem
+#
+#    This script requires superuser priveleges (default) for some operations.
 #
 #    When run, it will perform several "install" operations for the following components:
 # - Links will be created for the startup script using update-rc.d command in /etc/init.d/
@@ -79,7 +83,6 @@ sudo apt-get install libudev-dev
 sudo apt-get install libdrm-dev
 
 echo "Building and installing new PEM application..."
-cd $cur_dir
 cd $cur_dir
 make clean
 make all
