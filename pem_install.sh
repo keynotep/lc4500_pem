@@ -25,6 +25,11 @@ cur_dir=`pwd`
 echo "Stopping current application"
 sudo kill -15 `cat /var/run/lc4500.pid`
 
+cd
+if [ -d lc4500_pem_dev ]; then
+  rm -f -r  lc4500_pem_dev
+fi
+
 echo ========= Installing Startup Script and app ==========
 # Now fix startup sequence
 echo "Updating Boot-up scripts...."
