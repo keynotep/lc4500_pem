@@ -6,7 +6,7 @@
 * Version 0.8.0 (Beta)
 *   - Cleaned up external trigger support and fixed several bugs to
 *     Reduce overhead and improve pattern rate.
-*   - increased maximum pattern support (768 for v0.7.8, 1536 for v0.7.9)
+*   - increased maximum pattern support (768 for v0.8.0)
 *
 * (c)2016 Keynote Photonics
 *
