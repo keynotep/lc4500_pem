@@ -1,5 +1,5 @@
 #!/bin/bash
-# Last update:  01/21/2016 
+# Last update:  06/20/2016 
 #
 #    This script is designed to be ran on the BB from the directory where the install files are located.
 # This means that the user has already pulled a copy of the install files (including this script)
@@ -69,17 +69,17 @@ fi
 
 echo ============= Check Network config ================
 echo Check /etc/hostname to be sure the network name is correct:
-newhostname="lc4500-pem"
 echo "  Type the new network hostname you want to use or just enter to use default."
 echo "  (you have 30 seconds or default will be automatically used): [lc4500-pem] "
 read -t 30 newhostname
-if [ $newhostname == "" ] ; then
+if [ "$newhostname" == "" ] ; then
    echo "Default network ID used: lc4500-pem. Be careful if you have multiple units on your network!"
    sudo echo "lc4500-pem" > /etc/hostname
 else
    echo "OK, changing network ID to:" $newhostname
    sudo echo $newhostname > /etc/hostname
 fi
+cp interfaces /etc/network/.
 
 echo "Updating Debitian libraries..."
 sudo apt-get update
