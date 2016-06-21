@@ -22,8 +22,10 @@
 #
 cur_dir=`pwd`
 
-echo "Stopping current application"
-sudo kill -15 `cat /var/run/lc4500.pid`
+if [ -e /var/run/lc4500.pid ]; then
+  echo "Stopping current application"
+  sudo kill -15 `cat /var/run/lc4500.pid`
+fi
 
 cd
 if [ -d lc4500_pem_dev ]; then
