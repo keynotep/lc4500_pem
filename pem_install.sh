@@ -1,5 +1,5 @@
 #!/bin/bash
-# Last update:  06/20/2016 
+# Last update:  11/23/2016 
 #
 #    This script is designed to be ran on the BB from the directory where the install files are located.
 # This means that the user has already pulled a copy of the install files (including this script)
@@ -33,19 +33,21 @@ if [ -d lc4500_pem_dev ]; then
 fi
 
 echo ========= Installing Startup Script and app ==========
+#NEED TO REWORK FOR JESSIE
+#
 # Now fix startup sequence
-echo "Updating Boot-up scripts...."
-cd /etc/init.d
+#echo "Updating Boot-up scripts...."
+#cd /etc/init.d
 # remove old startup scripts so we can rearrange them
-sudo update-rc.d apache2 remove
-sudo update-rc.d xrdp remove
+#sudo update-rc.d apache2 remove
+#sudo update-rc.d xrdp remove
 # copy new versions with new priorities
-cp $cur_dir/StartupScripts/cron .
-cp $cur_dir/StartupScripts/dbus .
-cp $cur_dir/StartupScripts/rsync .
-cp $cur_dir/StartupScripts/udhcpd .
-cp $cur_dir/StartupScripts/lc4500-pem.sh .
-sudo update-rc.d lc4500-pem.sh start 10 1 2 3 4 5 . stop 0 0 6 .
+#cp $cur_dir/StartupScripts/cron .
+#cp $cur_dir/StartupScripts/dbus .
+#cp $cur_dir/StartupScripts/rsync .
+#cp $cur_dir/StartupScripts/udhcpd .
+#cp $cur_dir/StartupScripts/lc4500-pem.sh .
+#sudo update-rc.d lc4500-pem.sh start 10 1 2 3 4 5 . stop 0 0 6 .
 
 echo ========= Installing Device Tree Overlays  =============
 echo "Updating Device Tree Overlay files...."
@@ -57,43 +59,56 @@ echo ============= Updating the Cape Manager ================
 cd /etc/default
 cp $cur_dir/capemgr .
 
+echo ============= Adding USB device rules file ================
+cd /etc/udev/rules.d
+cp $cur_dir/lc4500.rules .
+
 echo ============= Check uEnv.txt boot parameters ================
-echo "Updating uEnv.txt file. Previous version saved in /boot/uEnv.old.txt"
-cd $cur_dir
-cp /boot/uEnv.txt /boot/uEnv.old.txt
-cp /boot/uEnv.txt ./uEnv.old
-if [ -s uEnv.old ]; then
-  echo "Using saved uEnv file"
-  cat uEnv.old | sed  '/cmdline/s/quiet/quiet text/g' |  sed  '/BB-BONELT-HDMI,BB-BONELT-HDMIN/s/#cape_disable/cape_disable/g' | sed '/BB-BONE-EMMC-2G/s/cape_disable/#cape_disable/g' | awk '/uname/{print "optargs=\"consoleblank=0\""}1' > /boot/uEnv.txt
-else
-  cat /boot/uEnv.txt  | sed  '/cmdline/s/quiet/quiet text/g' |  sed  '/BB-BONELT-HDMI,BB-BONELT-HDMIN/s/#cape_disable/cape_disable/g' | sed '/BB-BONE-EMMC-2G/s/cape_disable/#cape_disable/g' | awk '/uname/{print "optargs=\"consoleblank=0\""}1' > /boot/uEnv.txt
-fi
+#NEED TO REWORK FOR JESSIE
+#
+#echo "Updating uEnv.txt file. Previous version saved in /boot/uEnv.old.txt"
+#cd $cur_dir
+#cp /boot/uEnv.txt /boot/uEnv.old.txt
+#cp /boot/uEnv.txt ./uEnv.old
+#if [ -s uEnv.old ]; then
+#  echo "Using saved uEnv file"
+#  cat uEnv.old | sed  '/cmdline/s/quiet/quiet text/g' |  sed  '/BB-BONELT-HDMI,BB-BONELT-HDMIN/s/#cape_disable/cape_disable/g' | sed '/BB-BONE-EMMC-2G/s/cape_disable/#cape_disable/g' | awk '/uname/{print "optargs=\"consoleblank=0\""}1' > /boot/uEnv.txt
+#else
+#  cat /boot/uEnv.txt  | sed  '/cmdline/s/quiet/quiet text/g' |  sed  '/BB-BONELT-HDMI,BB-BONELT-HDMIN/s/#cape_disable/cape_disable/g' | sed '/BB-BONE-EMMC-2G/s/cape_disable/#cape_disable/g' | awk '/uname/{print "optargs=\"consoleblank=0\""}1' > /boot/uEnv.txt
+#fi
 
 echo ============= Check Network config ================
-echo Check /etc/hostname to be sure the network name is correct:
-echo "  Type the new network hostname you want to use or just enter to use default."
-echo "  (you have 30 seconds or default will be automatically used): [lc4500-pem] "
-read -t 30 newhostname
-if [ "$newhostname" == "" ] ; then
-   echo "Default network ID used: lc4500-pem. Be careful if you have multiple units on your network!"
-   sudo echo "lc4500-pem" > /etc/hostname
-else
-   echo "OK, changing network ID to:" $newhostname
-   sudo echo $newhostname > /etc/hostname
-fi
-cp interfaces /etc/network/.
+#echo Check /etc/hostname to be sure the network name is correct:
+#echo "  Type the new network hostname you want to use or just enter to use default."
+#echo "  (you have 30 seconds or default will be automatically used): [lc4500-pem] "
+#read -t 30 newhostname
+#if [ "$newhostname" == "" ] ; then
+#   echo "Default network ID used: lc4500-pem. Be careful if you have multiple units on your network!"
+#   sudo echo "lc4500-pem" > /etc/hostname
+#else
+#   echo "OK, changing network ID to:" $newhostname
+#   sudo echo $newhostname > /etc/hostname
+#fi
+#cp interfaces /etc/network/.
 
 echo "Updating Debitian libraries..."
+echo ========= Running Aptitude Update ==========
 sudo apt-get update
-sudo apt-get install libdrm2
-sudo apt-get install libudev-dev
-sudo apt-get install libdrm-dev
+echo ========= Running Aptitude Upgrade ==========
+sudo apt-get upgrade
+echo ========= Removing unwanted drivers ==========
+#sudo apt-get remove --auto-remove apache2 -y
+#sudo apt-get remove --auto-remove udhcpd -y
+echo ========= Installing new drivers ==========
+sudo apt-get install libdrm2 -y
+sudo apt-get install libudev-dev -y
+sudo apt-get install libdrm-dev -y
 
 echo "Building and installing new PEM application..."
-cd $cur_dir
-make clean
-make all
-sudo cp lc4500_main /usr/bin/.
+#cd $cur_dir
+#make clean
+#make all
+#sudo cp lc4500_main /usr/bin/.
 
 #create solutions database directory
 if [ -d /opt/lc4500pem ] ; then
@@ -104,9 +119,9 @@ else
 fi
 
 if [ -s /usr/bin/lc4500_main ] ; then
-   echo "Installation Successfull. Rebooting ..."
+   echo "Installation Successfull. Reboot now ..."
    sleep 5
-   reboot
+#   reboot
 else
    echo "Installation script failed!"
 fi

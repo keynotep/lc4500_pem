@@ -18,6 +18,7 @@ DAEMON=/usr/sbin/udhcpd
 NAME=udhcpd
 DESC="very small Busybox based DHCP server"
 DHCPD_OPTS="-S" # Additional options given to the server
+DHCPD_ENABLED="no"
 
 test -x $DAEMON || exit 0
 

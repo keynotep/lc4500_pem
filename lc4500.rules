@@ -1,0 +1,2 @@
+KERNEL=="hidraw",ATTRS(busnum)=="2", ATTRS{idVendor)=="0451", ATTRS(idProduct)=="6401", MODE="0666"
+KERNEL=="hidraw",ATTRS(busnum)=="2", ATTRS{idVendor)=="2047", ATTRS(idProduct)=="0946", MODE="0666"
