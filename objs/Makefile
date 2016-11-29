@@ -20,6 +20,7 @@ APPOBJS     = 	lc4500_main.o 	\
 		Pattern.o 	\
 		PtnStream.o 	\
 		Database.o 	\
+		hid.o		\
 		i2c.o 		\
 		dlpc350_api.o 	\
 		drm_buff.o 	\
