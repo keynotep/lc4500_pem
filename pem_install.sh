@@ -108,7 +108,7 @@ sudo apt-get install libdrm-dev -y
 #cd $cur_dir
 #make clean
 #make all
-#sudo cp lc4500_main /usr/bin/.
+sudo cp lc4500_main /usr/bin/.
 
 #create solutions database directory
 echo ========= Creating LC4500 utility directories ==========
