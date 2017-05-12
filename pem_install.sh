@@ -1,24 +1,30 @@
 #!/bin/bash
-# Last update:  11/23/2016 
+# Last update:  05/12/2017
 #
 #    This script is designed to be ran on the BB from the directory where the install files are located.
 # This means that the user has already pulled a copy of the install files (including this script)
 # onto the BB either through git or some other means.  
 #
+#    Start with a clean Debian build. The following Debian Image file was used:
+#       bone-debian-7.11-ixde-4gb-armhf-2016-06-15-4gb.img
 #
-#    Start with a clean Debian build. Debian Image 2015-07-28 was used from the following image:
-#       BBB-eMMC-flasher-debian-7.8-ixde-4gb-armhf-2015-07-28-4gb.img
+#    To make this a "flasher" image after installing the img file onto a uSDcard, a line at the end of
+#    the /boot/uEnv.txt file must be uncommented and changed to this:
+#       cmdline=init=/opt/scripts/tools/eMMC/init-eMMC-flasher-v3-bbg.sh
 #
-#    Load this install script and related files from git using the following command line (public):
+#    After flashing the BBG, remove uSDcard and reboot.  Then Load the install script and related files 
+#    from git using the following command line (public):
 #	git clone https://github.com/keynotep/lc4500_pem
 #
-#    This script requires superuser priveleges (default) for some operations.
+#    NOTE: This install script does require superuser priveleges (default) for some operations.
 #
 #    When run, it will perform several "install" operations for the following components:
-# - Links will be created for the startup script using update-rc.d command in /etc/init.d/
-# - compile the cape manager overlays (DTS) into DTBO files and place them into the cape manager folder
-# - update aptitude database and install various libraries required by the application
-#
+#    - Links will be created for the startup script using update-rc.d command in /etc/init.d/
+#    - compile the cape manager overlays (DTS) into DTBO files and place them into the cape manager folder
+#    - update aptitude database and install various libraries required by the application
+#    - Create folders needed by the LC4500-PEM application and make it auto-run on power-up
+#    
+#    A Reboot will be required after it completes
 #
 cur_dir=`pwd`
 
@@ -39,6 +45,8 @@ cd /etc/init.d
 # remove old startup scripts so we can rearrange them
 sudo update-rc.d apache2 remove
 sudo update-rc.d xrdp remove
+sudo systemctl disable jekyll-autorun.service
+sudo systemctl disable bonescript-autorun.service
 # copy new versions with new priorities
 #cp $cur_dir/StartupScripts/cron .
 #cp $cur_dir/StartupScripts/dbus .
@@ -82,10 +90,10 @@ if [ "$newhostname" == "" ] ; then
    echo "Default network ID used: lc4500-pem. Be careful if you have multiple units on your network!"
    sudo echo "lc4500-pem" > /etc/hostname
 else
-   echo "OK, changing network ID to:" $newhostname
+   echo "OK, changing network ID to:  " $newhostname
    sudo echo $newhostname > /etc/hostname
 fi
-#cp interfaces /etc/network/.
+cp interfaces /etc/network/.
 
 echo "Updating Debitian libraries..."
 echo ========= Running Aptitude Update ==========
@@ -93,17 +101,21 @@ sudo apt-get update
 #echo ========= Running Aptitude Upgrade ==========
 #sudo apt-get upgrade
 echo ========= Removing unwanted drivers ==========
-sudo apt-get remove --auto-remove apache2 -y
+sudo apt-get remove apache2 -y
+#removal of udhcp will prevent RNDIS from working
 #sudo apt-get remove --auto-remove udhcpd -y
-sudo apt-get remove --auto-remove consolekit -y
+sudo apt-get remove dbus-x11 consolekit -y
+sudo apt-get autoremove -y
 echo ========= Installing new drivers ==========
 sudo apt-get install libdrm2 -y
 #sudo apt-get install udev -y
 sudo apt-get install libudev-dev -y
 sudo apt-get install libdrm-dev -y
-#sudo apt-get install libusb-dev -y
-#sudo apt-get install libusb-1.0.0-dev
+#next 2 needed if using USB loop-back to control ASIC over USB instead of I2C
+sudo apt-get install libusb-dev -y
+sudo apt-get install libusb-1.0.0-dev
 
+#commented out recompile of application for now
 #echo "Building and installing new PEM application..."
 #cd $cur_dir
 #make clean
@@ -112,6 +124,7 @@ sudo cp lc4500_main /usr/bin/.
 
 #create solutions database directory
 echo ========= Creating LC4500 utility directories ==========
+# Create Solution root directory
 if [ -d /opt/lc4500pem ] ; then
     echo "Solution directory exists"
 else
@@ -119,6 +132,27 @@ else
     sudo mkdir /opt/lc4500pem
 fi
 
+# Create/populate Script directory
+if [ -d /opt/lc4500pem/bin ] ; then
+    echo "Utility directory exists"
+else
+    echo "Creating Utility directory"
+    sudo mkdir /opt/lc4500pem/bin
+fi
+cp Solutions/*.sh /opt/lc4500pem/bin/.
+
+
+# Create/populate Solution Archive directory
+if [ -d /opt/lc4500pem/archive ] ; then
+    echo "Utility directory exists"
+else
+    echo "Creating Utility directory"
+    sudo mkdir /opt/lc4500pem/archive
+fi
+cp Solutions/*.tar.gz /opt/lc4500pem/archive/.
+
+
+echo ========= Installation complete ==========
 if [ -s /usr/bin/lc4500_main ] ; then
    echo "Installation Successfull. Reboot now ..."
    sleep 5

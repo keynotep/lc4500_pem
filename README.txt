@@ -1,14 +1,15 @@
 /*******************************************************************
 * Important information:
 *
-* Last updated: 06/16/2016
+* Last updated: 05/12/2017
 *
-* Version 0.8.0 (Beta)
-*   - Cleaned up external trigger support and fixed several bugs to
-*     Reduce overhead and improve pattern rate.
-*   - increased maximum pattern support (768 for v0.8.0)
+* Version 1.0.1
+*   - Restructured how pattern sequences are synchronized to provide better
+*     stability for 1-bit and 8-bit pattern sequences.
+*   - reduced NUC to 1, increased Static Images to 32 and kept maximum 
+*     patterns supported (768 1-bit or 96 8-bit)
 *
-* (c)2016 Keynote Photonics
+* (c)2017 Keynote Photonics
 *
 * These project files should be cloned from a git reposistory using
 *   
