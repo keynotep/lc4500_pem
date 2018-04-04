@@ -7,7 +7,7 @@
 #
 # Usage:
 #
-#   solutions/PutSolution.sh <Root_TarGZ_Name> 
+#   /opt/lc4500pem/data/bin/PutSolution.sh <Root_TarGZ_Name> 
 #
 cur_dir=`pwd`
 

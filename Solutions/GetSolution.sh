@@ -6,7 +6,7 @@
 #
 # Usage:
 #
-#   solutions/GetSolution.sh <SolutionName>
+#   /opt/lc4500pem/data/bin/GetSolution.sh <SolutionName>
 #
 cur_dir=`pwd`
 

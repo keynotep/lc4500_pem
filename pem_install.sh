@@ -1,5 +1,5 @@
 #!/bin/bash
-# Last update:  05/12/2017
+# Last update:  06/13/2017
 #
 #    This script is designed to be ran on the BB from the directory where the install files are located.
 # This means that the user has already pulled a copy of the install files (including this script)
@@ -128,29 +128,55 @@ echo ========= Creating LC4500 utility directories ==========
 if [ -d /opt/lc4500pem ] ; then
     echo "Solution directory exists"
 else
-    echo "Creating Solution directory"
+    echo "Creating entire Solution directory tree"
     sudo mkdir /opt/lc4500pem
+    sudo mkdir /opt/lc4500pem/data
+    sudo mkdir /opt/lc4500pem/data/bin
+    sudo mkdir /opt/lc4500pem/data/archive
+    sudo mkdir /opt/lc4500pem/data/LC4500
+fi
+
+# Create data directory
+if [ -d /opt/lc4500pem/data ] ; then
+    echo "Solution directory exists"
+else
+    echo "Creating Solution directory"
+    sudo mkdir /opt/lc4500pem/data
 fi
 
 # Create/populate Script directory
-if [ -d /opt/lc4500pem/bin ] ; then
+if [ -d /opt/lc4500pem/data/bin ] ; then
     echo "Utility directory exists"
 else
     echo "Creating Utility directory"
-    sudo mkdir /opt/lc4500pem/bin
+    sudo mkdir /opt/lc4500pem/data/bin
 fi
-cp Solutions/*.sh /opt/lc4500pem/bin/.
+#install solution manipulation scripts
+cp Solutions/*.sh /opt/lc4500pem/data/bin/.
 
 
 # Create/populate Solution Archive directory
-if [ -d /opt/lc4500pem/archive ] ; then
-    echo "Utility directory exists"
+if [ -d /opt/lc4500pem/data/archive ] ; then
+    echo "Solution Archive directory exists"
 else
-    echo "Creating Utility directory"
-    sudo mkdir /opt/lc4500pem/archive
+    echo "Creating Solution Archive directory"
+    sudo mkdir /opt/lc4500pem/data/archive
 fi
-cp Solutions/*.tar.gz /opt/lc4500pem/archive/.
+cp Solutions/*.tar.gz /opt/lc4500pem/data/archive/.
 
+# Create actual Solutions directory
+if [ -d /opt/lc4500pem/data/LC4500 ] ; then
+    echo "Solutions directory exists"
+else
+    echo "Creating Solutions directory"
+    sudo mkdir /opt/lc4500pem/data/LC4500
+fi
+
+# Install Bit plane test for use in board checkout
+/opt/lc4500pem/data/bin/PutSolution.sh BitPlane-Test
+echo "Bit plane test solution installed."
+echo "Install additional solutions using the following command line:"
+echo " /opt/lc4500pem/data/bin/PutSolution.sh <Solution Name>"
 
 echo ========= Installation complete ==========
 if [ -s /usr/bin/lc4500_main ] ; then

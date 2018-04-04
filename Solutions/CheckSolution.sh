@@ -5,7 +5,7 @@
 #
 # Usage:
 #
-#   ./CheckSolution.sh <Root_TarGZ_Name> 
+#   /opt/lc4500pem/data/bin/CheckSolution.sh <Root_TarGZ_Name> 
 #
 cur_dir=`pwd`
 

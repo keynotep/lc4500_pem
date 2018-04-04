@@ -23,6 +23,9 @@ test -x /usr/bin/lc4500_main || exit 0
 case "$1" in
 start|reload|force-reload|restart)
 
+    # restart RNDIS driver in case it has hung up
+    /opt/scripts/boot/autoconfigure_usb0.sh
+	
 	# update firmware if file exists
 	if test -f /var/tmp/ctemp; then
                 echo "Updating LC4500-PEM application ..."
